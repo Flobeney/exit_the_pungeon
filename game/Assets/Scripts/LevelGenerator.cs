@@ -34,7 +34,7 @@ public class LevelGenerator : MonoBehaviour
         Vector3 sizeTile = TilePrefab.GetComponent<Renderer>().bounds.size;
 
         // Haut & bas
-        for (float x = min.x; x < max.x; x++){
+        for (float x = min.x; x < max.x; x += sizeTile.x){
             // Haut
             Instantiate(
                 TilePrefab, 
@@ -49,7 +49,7 @@ public class LevelGenerator : MonoBehaviour
             );
         }
         // Gauche & droite
-        for (float y = min.y; y < max.y; y++){
+        for (float y = min.y; y < max.y; y += sizeTile.y){
             // Gauche
             Instantiate(
                 TilePrefab, 
