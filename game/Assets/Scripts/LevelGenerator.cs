@@ -34,6 +34,7 @@ public class LevelGenerator : MonoBehaviour
         Object[] materials = Resources.LoadAll(MATERIALS_FOLDER, typeof(Material));
         Material material = (Material)materials[Random.Range(0, materials.Length)];
         TilePrefab.GetComponent<Renderer>().material = material;
+        Debug.Log(material.name);
 
         // Get size of camera & tile
         Vector3 min = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, Camera.main.nearClipPlane));
@@ -48,6 +49,9 @@ public class LevelGenerator : MonoBehaviour
         GenerateWall(min, max, sizeTile, false, true);
         // Droite
         GenerateWall(min, max, sizeTile, false, false);
+
+        // Floor
+        // GenerateFloor(materials, min, max, sizeTile);
     }
 
     /// <summary>
@@ -112,5 +116,30 @@ public class LevelGenerator : MonoBehaviour
             return Random.Range(0, 100) < PERCENT_CHANCE_DOOR;
         }
         return false;
+    }
+
+    /// <summary>
+    /// Generates the floor of the level
+    /// </summary>
+    /// <param name="materials">Materials available</param>
+    /// <param name="min">Min of the camera</param>
+    /// <param name="max">Max of the camera</param>
+    /// <param name="sizeTile">Size of the tile</param>
+    void GenerateFloor(Object[] materials, Vector3 min, Vector3 max, Vector3 sizeTile){
+        // Choose material
+        Material material = (Material)materials[Random.Range(0, materials.Length)];
+        TilePrefab.GetComponent<Renderer>().material = material;
+        Debug.Log(material.name);
+        // Boucle
+        for (float x = min.x + sizeTile.x; x < max.x - sizeTile.x; x += sizeTile.x){
+            for (float y = min.y + sizeTile.y; y < max.y - sizeTile.y; y += sizeTile.y){
+                // Générer le mur
+                Instantiate(
+                    TilePrefab, 
+                    new Vector3(x + + (sizeTile.x / 2), y + + (sizeTile.y / 2), 0), 
+                    Quaternion.identity
+                );
+            }
+        }
     }
 }
