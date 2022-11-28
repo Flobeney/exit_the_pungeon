@@ -393,6 +393,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TilePrefab: {fileID: 6023862685959518841, guid: 4f9b918b3c80840d39cce0195bff03f2, type: 3}
+  DoorPrefab: {fileID: 5887208419781401090, guid: 3cc2cd5a6658e4080b41fc4296bdad55, type: 3}
 --- !u!4 &554621050
 Transform:
   m_ObjectHideFlags: 0

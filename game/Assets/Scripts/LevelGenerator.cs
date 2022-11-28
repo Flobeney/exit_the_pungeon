@@ -13,6 +13,7 @@ public class LevelGenerator : MonoBehaviour
 
     // Champs
     public GameObject TilePrefab;
+    public GameObject DoorPrefab;
 
     // Start is called before the first frame update
     void Start()
@@ -154,6 +155,20 @@ public class LevelGenerator : MonoBehaviour
         // Générer le mur
         Instantiate(TilePrefab, posDoorLeft, Quaternion.identity);
         Instantiate(TilePrefab, posDoorRight, Quaternion.identity);
+
+        // "Porte" pour générer la salle suivante
+        // Changer la taille de la porte
+        Vector3 sizeDoor = new Vector3(
+            isHorizontal ? sizeTile.x * SIZE_DOOR : sizeTile.x,
+            isHorizontal ? sizeTile.y : sizeTile.y * SIZE_DOOR,
+            1
+        );
+        DoorPrefab.transform.localScale = sizeDoor;
+        // Définir la position de la porte
+        Vector3 posDoor = isHorizontal 
+        ? new Vector3((posDoorRight.x - posDoorLeft.x) + posDoorLeft.x - sizeDoor.x, posDoorLeft.y, 0) 
+        : new Vector3(posDoorLeft.x, (posDoorRight.y - posDoorLeft.y) + posDoorLeft.y - sizeDoor.y, 0);
+        Instantiate(DoorPrefab, posDoor, Quaternion.identity);
     }
 
     /// <summary>
