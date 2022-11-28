@@ -77,10 +77,14 @@ public class LevelGenerator : MonoBehaviour
             if(
                 nbDoor < MAX_DOOR_PER_WALL // Pas trop de portes par mur
                 && i - lastDoorPosition > SPACE_BETWEEN_DOOR * incr // Pas des portes trop proches
-                && GenerateDoor(i, start, limit)
+                && MustGenerateDoor(i, start, limit)
             ){
                 // Incrémenter le nb de portes
                 nbDoor++;
+
+                // Générer la porte
+                GenerateDoor(i, min, max, sizeTile, isHorizontal, isLeft);
+
                 // Sauter 2 cases
                 i += incr * SIZE_DOOR;
                 // Définir la position de la dernière porte
@@ -104,18 +108,53 @@ public class LevelGenerator : MonoBehaviour
     }
 
     /// <summary>
-    /// Generates a door
+    /// Defined whether to generate a door
     /// </summary>
     /// <param name="i">Current position</param>
     /// <param name="start">Start of the camera</param>
     /// <param name="limit">Limit of the camera</param>
-    bool GenerateDoor(float i, float min, float max){
+    bool MustGenerateDoor(float i, float min, float max){
         // Porte pour changer de niveau
         if(i > min && i < max - SIZE_DOOR){ // S'assurer de pas être au 1er ou dernier tile
             // Si le % est atteint
             return Random.Range(0, 100) < PERCENT_CHANCE_DOOR;
         }
         return false;
+    }
+
+    /// <summary>
+    /// Generates a door
+    /// </summary>
+    /// <param name="i">Current pos</param>
+    /// <param name="min">Min of the camera</param>
+    /// <param name="max">Max of the camera</param>
+    /// <param name="sizeTile">Size of the tile</param>
+    /// <param name="isHorizontal">If the wall is horizontal</param>
+    /// <param name="isLeft">If the wall is on the left</param>
+    void GenerateDoor(float i, Vector3 min, Vector3 max, Vector3 sizeTile, bool isHorizontal, bool isLeft){
+        // Instancier la porte
+        Vector3 posDoorLeft;
+        Vector3 posDoorRight;
+        if(isHorizontal){
+            if(isLeft){ // Haut
+                posDoorLeft = new Vector3((i-1) + (sizeTile.x / 2), max.y - (sizeTile.y / 2) + sizeTile.y, 0);
+                posDoorRight = new Vector3((i+SIZE_DOOR+1) + (sizeTile.x / 2), max.y - (sizeTile.y / 2) + sizeTile.y, 0);
+            }else{ // Bas
+                posDoorLeft = new Vector3((i-1) + (sizeTile.x / 2), min.y + (sizeTile.y / 2) - sizeTile.y, 0);
+                posDoorRight = new Vector3((i+SIZE_DOOR+1) + (sizeTile.x / 2), min.y + (sizeTile.y / 2) - sizeTile.y, 0);
+            }
+        }else{
+            if(isLeft){ // Gauche
+                posDoorLeft = new Vector3(min.x + (sizeTile.x / 2) - sizeTile.x, (i-1) + (sizeTile.y / 2), 0);
+                posDoorRight = new Vector3(min.x + (sizeTile.x / 2) - sizeTile.x, (i+SIZE_DOOR+1) + (sizeTile.y / 2), 0);
+            }else{ // Droite
+                posDoorLeft = new Vector3(max.x - (sizeTile.x / 2) + sizeTile.x, (i-1) + (sizeTile.y / 2), 0);
+                posDoorRight = new Vector3(max.x - (sizeTile.x / 2) + sizeTile.x, (i+SIZE_DOOR+1) + (sizeTile.y / 2), 0);
+            }
+        }
+        // Générer le mur
+        Instantiate(TilePrefab, posDoorLeft, Quaternion.identity);
+        Instantiate(TilePrefab, posDoorRight, Quaternion.identity);
     }
 
     /// <summary>
