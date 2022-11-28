@@ -1,0 +1,24 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Aim : MonoBehaviour
+{
+    private float aimAngle;
+    private Vector2 aim;
+
+    // Start is called before the first frame update
+    void Awake()
+    {
+        aim = new Vector2();
+    }
+
+    // Update is called once per frame
+    void FixedUpdate()
+    {
+        // Rotation towards the mouse
+        aim = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+        aimAngle = Mathf.Atan2(aim.y, aim.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.AngleAxis(aimAngle, Vector3.forward);
+    }
+}
