@@ -34,7 +34,6 @@ public class LevelGenerator : MonoBehaviour
         Object[] materials = Resources.LoadAll(MATERIALS_FOLDER, typeof(Material));
         Material material = (Material)materials[Random.Range(0, materials.Length)];
         TilePrefab.GetComponent<Renderer>().material = material;
-        Debug.Log(material.name);
 
         // Get size of camera & tile
         Vector3 min = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, Camera.main.nearClipPlane));
@@ -168,7 +167,7 @@ public class LevelGenerator : MonoBehaviour
         // Choose material
         Material material = (Material)materials[Random.Range(0, materials.Length)];
         TilePrefab.GetComponent<Renderer>().material = material;
-        Debug.Log(material.name);
+
         // Boucle
         for (float x = min.x + sizeTile.x; x < max.x - sizeTile.x; x += sizeTile.x){
             for (float y = min.y + sizeTile.y; y < max.y - sizeTile.y; y += sizeTile.y){
