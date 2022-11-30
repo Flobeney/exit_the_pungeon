@@ -18,7 +18,11 @@ public class LevelGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GenerateRoom();
+        // Get size of camera
+        Vector3 min = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, Camera.main.nearClipPlane));
+        Vector3 max = Camera.main.ViewportToWorldPoint(new Vector3(1, 1, Camera.main.nearClipPlane));
+
+        GenerateRoom(min, max);
     }
 
     // Update is called once per frame
@@ -27,32 +31,29 @@ public class LevelGenerator : MonoBehaviour
         
     }
 
-    public void test(){
-        Debug.Log("test from level generator");
-    }
-
     /// <summary>
     /// Generates a room
     /// </summary>
-    void GenerateRoom(){
+    /// <param name="min">Min of the camera</param>
+    /// <param name="max">Max of the camera</param>
+    /// <param name="doorDirection">Direction of the door from which you come</param>
+    public void GenerateRoom(Vector3 min, Vector3 max, DoorDirection doorDirection = DoorDirection.None){
         // Choose material
         Object[] materials = Resources.LoadAll(MATERIALS_FOLDER, typeof(Material));
         Material material = (Material)materials[Random.Range(0, materials.Length)];
         TilePrefab.GetComponent<Renderer>().material = material;
 
-        // Get size of camera & tile
-        Vector3 min = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, Camera.main.nearClipPlane));
-        Vector3 max = Camera.main.ViewportToWorldPoint(new Vector3(1, 1, Camera.main.nearClipPlane));
+        // Get size of tile
         Vector3 sizeTile = TilePrefab.GetComponent<Renderer>().bounds.size;
 
         // Haut
-        GenerateWall(min, max, sizeTile, true, true);
+        if(doorDirection != DoorDirection.DoorTop) GenerateWall(min, max, sizeTile, true, true);
         // Bas
-        GenerateWall(min, max, sizeTile, true, false);
+        if(doorDirection != DoorDirection.DoorBottom) GenerateWall(min, max, sizeTile, true, false);
         // Gauche
-        GenerateWall(min, max, sizeTile, false, true);
+        if(doorDirection != DoorDirection.DoorLeft) GenerateWall(min, max, sizeTile, false, true);
         // Droite
-        GenerateWall(min, max, sizeTile, false, false);
+        if(doorDirection != DoorDirection.DoorRight) GenerateWall(min, max, sizeTile, false, false);
 
         // Floor
         // GenerateFloor(materials, min, max, sizeTile);
