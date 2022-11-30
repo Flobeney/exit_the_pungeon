@@ -17,6 +17,8 @@ public class Door : MonoBehaviour
     }
 
     void OnTriggerEnter2D(Collider2D other){
-        Debug.Log("Player entered door");
+        Debug.Log("Player entered door : " + this.tag);
+
+        FindObjectOfType<LevelGenerator>().test();
     }
 }

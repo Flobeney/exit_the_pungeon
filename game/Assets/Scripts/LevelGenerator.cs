@@ -27,6 +27,10 @@ public class LevelGenerator : MonoBehaviour
         
     }
 
+    public void test(){
+        Debug.Log("test from level generator");
+    }
+
     /// <summary>
     /// Generates a room
     /// </summary>
@@ -166,8 +170,20 @@ public class LevelGenerator : MonoBehaviour
         DoorPrefab.transform.localScale = sizeDoor;
         // Définir la position de la porte
         Vector3 posDoor = isHorizontal 
-        ? new Vector3((posDoorRight.x - posDoorLeft.x) + posDoorLeft.x - sizeDoor.x, posDoorLeft.y, 0) 
-        : new Vector3(posDoorLeft.x, (posDoorRight.y - posDoorLeft.y) + posDoorLeft.y - sizeDoor.y, 0);
+        ? new Vector3(
+            (posDoorRight.x - posDoorLeft.x) + posDoorLeft.x - sizeDoor.x, 
+            isLeft ? posDoorLeft.y - sizeDoor.y : posDoorLeft.y + sizeDoor.y, 
+            0
+        ) 
+        : new Vector3(
+            isLeft ? posDoorLeft.x + sizeDoor.x : posDoorLeft.x - sizeDoor.x, 
+            (posDoorRight.y - posDoorLeft.y) + posDoorLeft.y - sizeDoor.y, 
+            0
+        );
+        // Tag de la porte
+        DoorPrefab.tag = isHorizontal
+        ? (isLeft ? "DoorTop" : "DoorBottom")
+        : (isLeft ? "DoorLeft" : "DoorRight");
         Instantiate(DoorPrefab, posDoor, Quaternion.identity);
     }
 
