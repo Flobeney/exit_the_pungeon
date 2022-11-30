@@ -57,6 +57,9 @@ public class LevelGenerator : MonoBehaviour
 
         // Floor
         // GenerateFloor(materials, min, max, sizeTile);
+
+        // Move camera
+        Camera.main.transform.position = new Vector3((max.x + min.x) / 2, (max.y + min.y) / 2, Camera.main.transform.position.z);
     }
 
     /// <summary>

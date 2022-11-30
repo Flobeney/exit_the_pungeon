@@ -69,6 +69,8 @@ public class Door : MonoBehaviour
 
             // Ne pas générer de là où on vient
             FindObjectOfType<LevelGenerator>().GenerateRoom(min, max, doorDirection);
+            // Détruire la porte qu'on vient de passer
+            Destroy(this.gameObject);
         }
 
     }
