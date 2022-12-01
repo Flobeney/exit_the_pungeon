@@ -8,8 +8,7 @@ public class LevelGenerator : MonoBehaviour
     private const string MATERIALS_FOLDER = "LowlyPoly";
     private const int PERCENT_CHANCE_DOOR = 10;
     private const int SIZE_DOOR = 2;
-    private const int MAX_DOOR_PER_WALL = 2;
-    private const int SPACE_BETWEEN_DOOR = 3;
+    private const int MAX_DOOR_PER_WALL = 1;
 
     // Champs
     public GameObject TilePrefab;
@@ -84,7 +83,6 @@ public class LevelGenerator : MonoBehaviour
             // Générer une porte (évt.)
             if(
                 nbDoor < MAX_DOOR_PER_WALL // Pas trop de portes par mur
-                && i - lastDoorPosition > SPACE_BETWEEN_DOOR * incr // Pas des portes trop proches
                 && MustGenerateDoor(i, start, limit)
             ){
                 // Incrémenter le nb de portes
