@@ -14,12 +14,22 @@ public class LevelGenerator : MonoBehaviour
     public GameObject TilePrefab;
     public GameObject DoorPrefab;
 
+    // Champs privés
+    /// Cette liste se compose de la manière suivante
+    /// Key : coordonnées xy de la salle
+    /// Value : coordonnées de la caméra
+    private IDictionary<Vector3, Vector3> _rooms = new Dictionary<Vector3, Vector3>();
+    private Vector3 _roomSize;
+
     // Start is called before the first frame update
     void Start()
     {
         // Get size of camera
         Vector3 min = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, Camera.main.nearClipPlane));
         Vector3 max = Camera.main.ViewportToWorldPoint(new Vector3(1, 1, Camera.main.nearClipPlane));
+
+        // Get size of room
+        _roomSize = new Vector3(max.x - min.x, max.y - min.y, 0);
 
         GenerateRoom(min, max);
     }
@@ -37,6 +47,29 @@ public class LevelGenerator : MonoBehaviour
     /// <param name="max">Max of the camera</param>
     /// <param name="doorDirection">Direction of the door from which you come</param>
     public void GenerateRoom(Vector3 min, Vector3 max, DoorDirection doorDirection = DoorDirection.None){
+        // Compute new camera position
+        Vector3 nextCamPosition = new Vector3((max.x + min.x) / 2, (max.y + min.y) / 2, Camera.main.transform.position.z);
+
+        // Compute the xy position of the room
+        // Faire arrondi
+        Vector3 xy = new Vector3(
+            (float)System.Math.Round(nextCamPosition.x / _roomSize.x), 
+            (float)System.Math.Round(nextCamPosition.y / _roomSize.y),
+            0
+        );
+
+        // Is room already generated ?
+        if(_rooms.ContainsKey(xy)){
+            // Room already generated
+            Debug.Log("Room already generated");
+            return;
+        }else{
+            // Room not generated
+            Debug.Log("Room not generated");
+            // Add room to list
+            _rooms.Add(xy, nextCamPosition);
+        }
+
         // Choose material
         Object[] materials = Resources.LoadAll(MATERIALS_FOLDER, typeof(Material));
         Material material = (Material)materials[Random.Range(0, materials.Length)];
@@ -58,8 +91,12 @@ public class LevelGenerator : MonoBehaviour
         // GenerateFloor(materials, min, max, sizeTile);
 
         // Move camera
-        Camera.main.transform.position = new Vector3((max.x + min.x) / 2, (max.y + min.y) / 2, Camera.main.transform.position.z);
+        Camera.main.transform.position = nextCamPosition;
     }
+
+    // public bool IsRoomAlreadyGenerated(Vector3 min, Vector3 max){
+    //     return _rooms.ContainsKey((min, max));
+    // }
 
     /// <summary>
     /// Generates the walls of the level
