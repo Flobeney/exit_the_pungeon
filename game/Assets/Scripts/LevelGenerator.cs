@@ -16,9 +16,10 @@ public class LevelGenerator : MonoBehaviour
 
     // Champs privés
     /// Cette liste se compose de la manière suivante
-    /// Key : coordonnées xy de la salle
+    /// Key Item1 : coordonnées x de la salle
+    /// Key Item2 : coordonnées y de la salle
     /// Value : coordonnées de la caméra
-    private IDictionary<Vector3, Vector3> _rooms = new Dictionary<Vector3, Vector3>();
+    private IDictionary<(int, int), Vector3> _rooms = new Dictionary<(int, int), Vector3>();
     private Vector3 _roomSize;
 
     // Start is called before the first frame update
@@ -45,21 +46,20 @@ public class LevelGenerator : MonoBehaviour
     /// </summary>
     /// <param name="min">Min of the camera</param>
     /// <param name="max">Max of the camera</param>
-    /// <param name="doorDirection">Direction of the door from which you come</param>
-    public void GenerateRoom(Vector3 min, Vector3 max, DoorDirection doorDirection = DoorDirection.None){
+    public void GenerateRoom(Vector3 min, Vector3 max){
         // Compute new camera position
         Vector3 nextCamPosition = new Vector3((max.x + min.x) / 2, (max.y + min.y) / 2, Camera.main.transform.position.z);
 
         // Compute the xy position of the room
         // Faire arrondi
-        Vector3 xy = new Vector3(
-            (float)System.Math.Round(nextCamPosition.x / _roomSize.x), 
-            (float)System.Math.Round(nextCamPosition.y / _roomSize.y),
-            0
-        );
+        int x = (int)System.Math.Round(nextCamPosition.x / _roomSize.x);
+        int y = (int)System.Math.Round(nextCamPosition.y / _roomSize.y);
+
+        // Walls to not generate
+        List<DoorDirection> wallsToNotGenerate = GetWallsToNotGenerate(x, y);
 
         // Is room already generated ?
-        if(_rooms.ContainsKey(xy)){
+        if(_rooms.ContainsKey((x, y))){
             // Room already generated
             Debug.Log("Room already generated");
             return;
@@ -67,7 +67,7 @@ public class LevelGenerator : MonoBehaviour
             // Room not generated
             Debug.Log("Room not generated");
             // Add room to list
-            _rooms.Add(xy, nextCamPosition);
+            _rooms.Add((x, y), nextCamPosition);
         }
 
         // Choose material
@@ -79,19 +79,49 @@ public class LevelGenerator : MonoBehaviour
         Vector3 sizeTile = TilePrefab.GetComponent<Renderer>().bounds.size;
 
         // Haut
-        if(doorDirection != DoorDirection.DoorTop) GenerateWall(min, max, sizeTile, true, true);
+        if(!wallsToNotGenerate.Contains(DoorDirection.DoorTop)) GenerateWall(min, max, sizeTile, true, true);
         // Bas
-        if(doorDirection != DoorDirection.DoorBottom) GenerateWall(min, max, sizeTile, true, false);
+        if(!wallsToNotGenerate.Contains(DoorDirection.DoorBottom)) GenerateWall(min, max, sizeTile, true, false);
         // Gauche
-        if(doorDirection != DoorDirection.DoorLeft) GenerateWall(min, max, sizeTile, false, true);
+        if(!wallsToNotGenerate.Contains(DoorDirection.DoorLeft)) GenerateWall(min, max, sizeTile, false, true);
         // Droite
-        if(doorDirection != DoorDirection.DoorRight) GenerateWall(min, max, sizeTile, false, false);
+        if(!wallsToNotGenerate.Contains(DoorDirection.DoorRight)) GenerateWall(min, max, sizeTile, false, false);
 
         // Floor
         // GenerateFloor(materials, min, max, sizeTile);
 
         // Move camera
         Camera.main.transform.position = nextCamPosition;
+    }
+
+    /// <summary>
+    /// Compute the walls to not generate
+    /// </summary>
+    /// <param name="doorDirection">Direction of the door from which you come</param>
+    /// <param name"x">x position of the room</param>
+    /// <param name="y">y position of the room</param>
+    /// <returns>List of walls to not generate</returns>
+    List<DoorDirection> GetWallsToNotGenerate(int x, int y){
+        List<DoorDirection> wallsToNotGenerate = new List<DoorDirection>();
+
+        // Check si la salle de gauche existe
+        if(_rooms.ContainsKey((x - 1, y))){
+            wallsToNotGenerate.Add(DoorDirection.DoorLeft);
+        }
+        // Check si la salle de droite existe
+        if(_rooms.ContainsKey((x + 1, y))){
+            wallsToNotGenerate.Add(DoorDirection.DoorRight);
+        }
+        // Check si la salle du haut existe
+        if(_rooms.ContainsKey((x, y + 1))){
+            wallsToNotGenerate.Add(DoorDirection.DoorTop);
+        }
+        // Check si la salle du bas existe
+        if(_rooms.ContainsKey((x, y - 1))){
+            wallsToNotGenerate.Add(DoorDirection.DoorBottom);
+        }
+
+        return wallsToNotGenerate;
     }
 
     // public bool IsRoomAlreadyGenerated(Vector3 min, Vector3 max){

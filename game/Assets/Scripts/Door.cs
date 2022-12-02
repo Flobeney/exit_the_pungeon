@@ -53,7 +53,6 @@ public class Door : MonoBehaviour
         _currentCameraPosition = Camera.main.transform.position;
 
         float diff;
-        DoorDirection doorDirection = DoorDirection.None;
         switch (DoorDirection.Parse(typeof(DoorDirection), this.tag)){
             // Horizontal
             case DoorDirection.DoorTop:
@@ -61,16 +60,12 @@ public class Door : MonoBehaviour
 
                 min.y = max.y;
                 max.y += diff;
-
-                doorDirection = DoorDirection.DoorBottom;
                 break;
             case DoorDirection.DoorBottom:
                 diff = max.y - min.y;
 
                 max.y = min.y;
                 min.y -= diff;
-
-                doorDirection = DoorDirection.DoorTop;
                 break;
             // Vertical
             case DoorDirection.DoorRight:
@@ -78,16 +73,12 @@ public class Door : MonoBehaviour
 
                 min.x = max.x;
                 max.x += diff;
-
-                doorDirection = DoorDirection.DoorLeft;
                 break;
             case DoorDirection.DoorLeft:
                 diff = max.x - min.x;
 
                 max.x = min.x;
                 min.x -= diff;
-
-                doorDirection = DoorDirection.DoorRight;
                 break;
             default:
                 break;
@@ -96,7 +87,7 @@ public class Door : MonoBehaviour
         // Sauver la nouvelle position de la caméra
         _newCameraPosition = new Vector3((max.x + min.x) / 2, (max.y + min.y) / 2, Camera.main.transform.position.z);
 
-        // Ne pas générer de là où on vient
-        FindObjectOfType<LevelGenerator>().GenerateRoom(min, max, doorDirection);
+        // Générer la prochaine salle
+        FindObjectOfType<LevelGenerator>().GenerateRoom(min, max);
     }
 }
