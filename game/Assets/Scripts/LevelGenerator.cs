@@ -1,17 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class LevelGenerator : MonoBehaviour
 {
     // Constants
     private const string MATERIALS_FOLDER = "LowlyPoly";
+    private const string DUNGEON_2D_FOLDER = "Dungeon-2D-PixelArt-Tileset";
     private const int PERCENT_CHANCE_DOOR = 10;
     private const int SIZE_DOOR = 2;
     private const int MAX_DOOR_PER_WALL = 1;
+    private const float Z_INDEX_WALL = -5f;
+    private const float Z_INDEX_FLOOR = 0f;
 
     // Champs
     public GameObject TilePrefab;
+    public GameObject FloorPrefab;
     public GameObject DoorPrefab;
 
     // Champs privés
@@ -89,7 +94,7 @@ public class LevelGenerator : MonoBehaviour
         if(!wallsToNotGenerate.Contains(DoorDirection.DoorRight)) GenerateWall(min, max, sizeTile, false, false);
 
         // Floor
-        // GenerateFloor(materials, min, max, sizeTile);
+        // GenerateFloor(materials, min, max);
 
         // Move camera
         Camera.main.transform.position = nextCamPosition;
@@ -144,8 +149,6 @@ public class LevelGenerator : MonoBehaviour
         // Définir quelles variables utiliser suivant si c'est haut/bas ou gauche/droite
         float start = isHorizontal ? min.x - (sizeTile.x/2) : min.y - (sizeTile.y/2);
         float limit = isHorizontal ? max.x + (sizeTile.x/2) : max.y + (sizeTile.y/2);
-        // float start = isHorizontal ? min.x : min.y;
-        // float limit = isHorizontal ? max.x : max.y;
         float incr = isHorizontal ? sizeTile.x : sizeTile.y;
 
         // Boucle
@@ -171,12 +174,12 @@ public class LevelGenerator : MonoBehaviour
             Vector3 pos;
             if(isHorizontal){
                 pos = isLeft 
-                ? new Vector3(i + (sizeTile.x / 2), max.y, 0) 
-                : new Vector3(i + (sizeTile.x / 2), min.y, 0);
+                ? new Vector3(i + (sizeTile.x / 2), max.y, Z_INDEX_WALL) 
+                : new Vector3(i + (sizeTile.x / 2), min.y, Z_INDEX_WALL);
             }else{
                 pos = isLeft 
-                ? new Vector3(min.x, i + (sizeTile.y / 2), 0) 
-                : new Vector3(max.x, i + (sizeTile.y / 2), 0);
+                ? new Vector3(min.x, i + (sizeTile.y / 2), Z_INDEX_WALL) 
+                : new Vector3(max.x, i + (sizeTile.y / 2), Z_INDEX_WALL);
             }
             // Générer le mur
             Instantiate(TilePrefab, pos, Quaternion.identity);
@@ -265,19 +268,24 @@ public class LevelGenerator : MonoBehaviour
     /// <param name="materials">Materials available</param>
     /// <param name="min">Min of the camera</param>
     /// <param name="max">Max of the camera</param>
-    /// <param name="sizeTile">Size of the tile</param>
-    void GenerateFloor(Object[] materials, Vector3 min, Vector3 max, Vector3 sizeTile){
-        // Choose material
-        Material material = (Material)materials[Random.Range(0, materials.Length)];
-        TilePrefab.GetComponent<Renderer>().material = material;
+    void GenerateFloor(Object[] materials, Vector3 min, Vector3 max){
+        // List floor sprites
+        Texture2D texture = Resources.Load<Texture2D>(DUNGEON_2D_FOLDER);
+        Sprite[] sprites = Resources.LoadAll<Sprite>(texture.name).Where(s => s.name.Contains("Floor")).ToArray();
+
+        // Get size of floor
+        Vector3 sizeFloor = FloorPrefab.GetComponent<Renderer>().bounds.size;
 
         // Boucle
-        for (float x = min.x + sizeTile.x; x < max.x - sizeTile.x; x += sizeTile.x){
-            for (float y = min.y + sizeTile.y; y < max.y - sizeTile.y; y += sizeTile.y){
+        for (float x = min.x - (sizeFloor.x/2); x < max.x + (sizeFloor.x/2); x += sizeFloor.x){
+            for (float y = min.y - (sizeFloor.y/2); y < max.y + (sizeFloor.y/2); y += sizeFloor.y){
+                // Choose sprite
+                FloorPrefab.GetComponent<SpriteRenderer>().sprite = sprites[Random.Range(0, sprites.Length)];
+
                 // Générer le mur
                 Instantiate(
-                    TilePrefab, 
-                    new Vector3(x + + (sizeTile.x / 2), y + + (sizeTile.y / 2), 0), 
+                    FloorPrefab, 
+                    new Vector3(x + (sizeFloor.x / 2), y + (sizeFloor.y / 2), Z_INDEX_FLOOR), 
                     Quaternion.identity
                 );
             }
