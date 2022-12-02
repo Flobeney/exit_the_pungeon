@@ -62,6 +62,7 @@ public class LevelGenerator : MonoBehaviour
         if(_rooms.ContainsKey((x, y))){
             // Room already generated
             Debug.Log("Room already generated");
+            Camera.main.transform.position = _rooms[(x, y)];
             return;
         }else{
             // Room not generated

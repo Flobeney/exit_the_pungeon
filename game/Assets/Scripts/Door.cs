@@ -5,10 +5,7 @@ using UnityEngine;
 public class Door : MonoBehaviour
 {
     // Champs
-    private bool _firstEnter = true;
-    private bool _exit = true;
-    private Vector3 _currentCameraPosition;
-    private Vector3 _newCameraPosition;
+    private DoorDirection _direction;
 
     // Start is called before the first frame update
     void Start()
@@ -28,32 +25,53 @@ public class Door : MonoBehaviour
     void OnTriggerEnter2D(Collider2D other){
         // Si le joueur entre dans la porte
         if(other.name == "Player"){
-            // Si c'est la première fois qu'il entre dans la porte
-            if(_firstEnter){
-                // On génère la nouvelle pièce
-                GenerateNextRoom();
-                _firstEnter = false;
-            }else{
-                // Le joueur est déjà passé par la porte, il faut juste changer la position de la caméra
-                Camera.main.transform.position = _exit ? _currentCameraPosition : _newCameraPosition;
-                _exit = !_exit;
-            }
+            // Get DoorDirection
+            _direction = (DoorDirection)DoorDirection.Parse(typeof(DoorDirection), this.tag);
+
+            // On génère la nouvelle pièce
+            GenerateNextRoom(GetNextDoorDirection(other));
         }
+    }
+
+    /// <summary>
+    /// Compute the next door direction
+    /// </summary>
+    /// <param name="player">The collider of the player</param>
+    /// <returns>The direction of the next door</returns>
+    DoorDirection GetNextDoorDirection(Collider2D player){
+        DoorDirection directionNextRoom = DoorDirection.None;
+        switch (_direction){
+            // Horizontal
+            case DoorDirection.DoorTop:
+                directionNextRoom = player.transform.position.y > transform.position.y ? DoorDirection.DoorBottom : DoorDirection.DoorTop;
+                break;
+            case DoorDirection.DoorBottom:
+                directionNextRoom = player.transform.position.y < transform.position.y ? DoorDirection.DoorTop : DoorDirection.DoorBottom;
+                break;
+            // Vertical
+            case DoorDirection.DoorRight:
+                directionNextRoom = player.transform.position.x > transform.position.x ? DoorDirection.DoorLeft : DoorDirection.DoorRight;
+                break;
+            case DoorDirection.DoorLeft:
+                directionNextRoom = player.transform.position.x < transform.position.x ? DoorDirection.DoorRight : DoorDirection.DoorLeft;
+                break;
+            default:
+                break;
+        }
+
+        return directionNextRoom;
     }
 
     /// <summary>
     /// Generate the next room
     /// </summary>
-    void GenerateNextRoom(){
+    void GenerateNextRoom(DoorDirection directionNextRoom){
         // Get size of camera
         Vector3 min = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, Camera.main.nearClipPlane));
         Vector3 max = Camera.main.ViewportToWorldPoint(new Vector3(1, 1, Camera.main.nearClipPlane));
 
-        // Save current camera position
-        _currentCameraPosition = Camera.main.transform.position;
-
         float diff;
-        switch (DoorDirection.Parse(typeof(DoorDirection), this.tag)){
+        switch (directionNextRoom){
             // Horizontal
             case DoorDirection.DoorTop:
                 diff = max.y - min.y;
@@ -83,9 +101,6 @@ public class Door : MonoBehaviour
             default:
                 break;
         }
-
-        // Sauver la nouvelle position de la caméra
-        _newCameraPosition = new Vector3((max.x + min.x) / 2, (max.y + min.y) / 2, Camera.main.transform.position.z);
 
         // Générer la prochaine salle
         FindObjectOfType<LevelGenerator>().GenerateRoom(min, max);
