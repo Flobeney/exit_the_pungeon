@@ -142,8 +142,10 @@ public class LevelGenerator : MonoBehaviour
         int nbDoor = 0;
         float lastDoorPosition = 0;
         // Définir quelles variables utiliser suivant si c'est haut/bas ou gauche/droite
-        float start = isHorizontal ? min.x : min.y;
-        float limit = isHorizontal ? max.x : max.y;
+        float start = isHorizontal ? min.x - (sizeTile.x/2) : min.y - (sizeTile.y/2);
+        float limit = isHorizontal ? max.x + (sizeTile.x/2) : max.y + (sizeTile.y/2);
+        // float start = isHorizontal ? min.x : min.y;
+        // float limit = isHorizontal ? max.x : max.y;
         float incr = isHorizontal ? sizeTile.x : sizeTile.y;
 
         // Boucle
@@ -169,12 +171,12 @@ public class LevelGenerator : MonoBehaviour
             Vector3 pos;
             if(isHorizontal){
                 pos = isLeft 
-                ? new Vector3(i + (sizeTile.x / 2), max.y - (sizeTile.y / 2), 0) 
-                : new Vector3(i + (sizeTile.x / 2), min.y + (sizeTile.y / 2), 0);
+                ? new Vector3(i + (sizeTile.x / 2), max.y, 0) 
+                : new Vector3(i + (sizeTile.x / 2), min.y, 0);
             }else{
                 pos = isLeft 
-                ? new Vector3(min.x + (sizeTile.x / 2), i + (sizeTile.y / 2), 0) 
-                : new Vector3(max.x - (sizeTile.x / 2), i + (sizeTile.y / 2), 0);
+                ? new Vector3(min.x, i + (sizeTile.y / 2), 0) 
+                : new Vector3(max.x, i + (sizeTile.y / 2), 0);
             }
             // Générer le mur
             Instantiate(TilePrefab, pos, Quaternion.identity);
@@ -227,8 +229,8 @@ public class LevelGenerator : MonoBehaviour
             }
         }
         // Générer le mur
-        Instantiate(TilePrefab, posDoorLeft, Quaternion.identity);
-        Instantiate(TilePrefab, posDoorRight, Quaternion.identity);
+        // Instantiate(TilePrefab, posDoorLeft, Quaternion.identity);
+        // Instantiate(TilePrefab, posDoorRight, Quaternion.identity);
 
         // "Porte" pour générer la salle suivante
         // Changer la taille de la porte
@@ -242,11 +244,11 @@ public class LevelGenerator : MonoBehaviour
         Vector3 posDoor = isHorizontal 
         ? new Vector3(
             (posDoorRight.x - posDoorLeft.x) + posDoorLeft.x - sizeDoor.x, 
-            isLeft ? posDoorLeft.y - sizeDoor.y : posDoorLeft.y + sizeDoor.y, 
+            isLeft ? posDoorLeft.y - (sizeDoor.y/2) : posDoorLeft.y + (sizeDoor.y/2), 
             0
         ) 
         : new Vector3(
-            isLeft ? posDoorLeft.x + sizeDoor.x : posDoorLeft.x - sizeDoor.x, 
+            isLeft ? posDoorLeft.x + (sizeDoor.x/2) : posDoorLeft.x - (sizeDoor.x/2), 
             (posDoorRight.y - posDoorLeft.y) + posDoorLeft.y - sizeDoor.y, 
             0
         );
