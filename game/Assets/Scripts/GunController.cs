@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Aim : MonoBehaviour
+public class GunController : MonoBehaviour
 {
     private float aimAngle, timeBtwShots;
     private Vector2 aim;
