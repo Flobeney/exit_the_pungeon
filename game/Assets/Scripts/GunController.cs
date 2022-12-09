@@ -26,7 +26,7 @@ public class GunController : MonoBehaviour
 
         if (timeBtwShots <= 0)
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButton(0))
             {
                 Instantiate(bullet, shootPoint.transform.position, transform.rotation);
                 timeBtwShots = startTimeBtwShots;
