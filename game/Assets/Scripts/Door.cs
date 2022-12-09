@@ -24,7 +24,7 @@ public class Door : MonoBehaviour
     /// </summary>
     void OnTriggerEnter2D(Collider2D other){
         // Si le joueur entre dans la porte
-        if(other.name == "Player"){
+        if(other.tag == "Player"){
             // Get DoorDirection
             _direction = (DoorDirection)DoorDirection.Parse(typeof(DoorDirection), this.tag);
 
