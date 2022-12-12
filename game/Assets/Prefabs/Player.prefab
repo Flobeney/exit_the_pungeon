@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3599598592115506962}
   - component: {fileID: 3599598592115506961}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Triangle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 3599598592473838327}
   - component: {fileID: 3599598592473838320}
   - component: {fileID: 2370111231509099799}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: GunPivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -134,7 +134,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bullet: {fileID: 2267976773582116071, guid: b71dc2f848e3d0c40a761272ce29e42c, type: 3}
   shootPoint: {fileID: 3599598592725225588}
-  startTimeBtwShots: 0.25
+  startTimeBtwShots: 0.2
 --- !u!114 &2370111231509099799
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -171,7 +171,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3599598592600150297}
   - component: {fileID: 3599598592600150298}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Circle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -254,7 +254,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3599598592725225589}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: shootingPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -290,7 +290,7 @@ GameObject:
   - component: {fileID: 3599598593312064310}
   - component: {fileID: 3599598593312064309}
   - component: {fileID: 2927026588992345092}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -363,7 +363,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e6705e27597e704fa6163167b6ecd5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  otherPlayer: {fileID: 0}
   player: {fileID: 3599598592115506960}
 --- !u!114 &3599598593312064309
 MonoBehaviour:
@@ -417,7 +416,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3599598593377708347}
   - component: {fileID: 3599598593377708340}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}

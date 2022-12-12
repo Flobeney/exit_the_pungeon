@@ -5,11 +5,12 @@ using Unity.Netcode;
 
 public class GunController : NetworkBehaviour
 {
+    [SerializeField]
+    private GameObject bullet, shootPoint;
+    [SerializeField]
+    private float startTimeBtwShots;
     private float aimAngle, timeBtwShots;
     private Vector2 aim;
-
-    public GameObject bullet, shootPoint;
-    public float startTimeBtwShots;
 
     // Start is called before the first frame update
     void Awake()

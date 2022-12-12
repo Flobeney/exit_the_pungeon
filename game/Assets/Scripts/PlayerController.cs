@@ -5,23 +5,18 @@ using Unity.Netcode;
 
 public class PlayerController : NetworkBehaviour
 {
-    // Other player variables
-    public GameObject otherPlayer;
-    private Rigidbody2D RbOtherPlayer;
-
     // Player variables
+    [SerializeField]
+    private float speed = 5f;
     public GameObject player;
     private Rigidbody2D rbPlayer;
-    private float speed = 5f, horizontalForce, verticalForce;
+    private float horizontalForce, verticalForce;
     private Vector2 movement, cursor;
     private bool facingRight = true;
-
-
 
     // Start is called before the first frame update
     private void Awake()
     {
-        // ! RbOtherPlayer = GoOtherPlayer.GetComponent<Rigidbody2D>();
         rbPlayer = GetComponent<Rigidbody2D>();
         movement = new Vector2();
     }
