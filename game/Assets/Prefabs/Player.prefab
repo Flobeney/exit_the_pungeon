@@ -95,6 +95,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3599598592473838327}
   - component: {fileID: 3599598592473838320}
+  - component: {fileID: 2370111231509099799}
   m_Layer: 0
   m_Name: GunPivot
   m_TagString: Untagged
@@ -134,6 +135,32 @@ MonoBehaviour:
   bullet: {fileID: 2267976773582116071, guid: b71dc2f848e3d0c40a761272ce29e42c, type: 3}
   shootPoint: {fileID: 3599598592725225588}
   startTimeBtwShots: 0.25
+--- !u!114 &2370111231509099799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3599598592473838326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df2868252ab5c4d1da357e8f11f1b524, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncPositionX: 0
+  SyncPositionY: 0
+  SyncPositionZ: 0
+  SyncRotAngleX: 0
+  SyncRotAngleY: 0
+  SyncRotAngleZ: 1
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  InLocalSpace: 0
+  Interpolate: 1
 --- !u!1 &3599598592600150296
 GameObject:
   m_ObjectHideFlags: 0
@@ -259,10 +286,11 @@ GameObject:
   m_Component:
   - component: {fileID: 3599598593312064304}
   - component: {fileID: 3599598593312064311}
-  - component: {fileID: 5098411927831261380}
+  - component: {fileID: 8178730547929636684}
   - component: {fileID: 3599598593312064310}
   - component: {fileID: 3599598593312064309}
   - component: {fileID: 2927026588992345092}
+  - component: {fileID: 4627949669781521748}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -307,9 +335,9 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
---- !u!61 &5098411927831261380
-BoxCollider2D:
+  m_Constraints: 4
+--- !u!58 &8178730547929636684
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -322,18 +350,8 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
+  m_Radius: 0.5
 --- !u!114 &3599598593312064310
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -390,6 +408,18 @@ MonoBehaviour:
   ScaleThreshold: 0.01
   InLocalSpace: 0
   Interpolate: 1
+--- !u!114 &4627949669781521748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3599598593312064308}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80d7c879794dfda4687da0e400131852, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3599598593377708346
 GameObject:
   m_ObjectHideFlags: 0
