@@ -6,13 +6,18 @@ using Unity.Netcode;
 public class PlayerController : NetworkBehaviour
 {
     // Player variables
-    [SerializeField]
-    private float speed = 5f;
+    [SerializeField] private float speed = 5f, rdmPosRange = 5f;
     public GameObject player;
     private Rigidbody2D rbPlayer;
     private float horizontalForce, verticalForce;
     private Vector2 movement, cursor;
     private bool facingRight = true;
+
+
+    public override void OnNetworkSpawn()
+    {
+        spawnPlayerRandomServerRpc();
+    }
 
     // Start is called before the first frame update
     private void Awake()
@@ -24,8 +29,8 @@ public class PlayerController : NetworkBehaviour
     private void FixedUpdate()
     {
         if (!IsOwner) return;
-        cursor = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
 
+        cursor = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
         if (cursor.x > 0 && !facingRight)
         {
             Flip();
@@ -45,9 +50,16 @@ public class PlayerController : NetworkBehaviour
 
     void Flip()
     {
+        if (!IsOwner) return;
         facingRight = !facingRight;
         Vector3 theScale = player.transform.localScale;
         theScale.x *= -1;
         player.transform.localScale = theScale;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void spawnPlayerRandomServerRpc()
+    {
+        transform.position = new Vector3(Random.Range(-rdmPosRange, rdmPosRange), Random.Range(-rdmPosRange, rdmPosRange), 0f);
     }
 }

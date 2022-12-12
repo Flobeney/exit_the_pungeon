@@ -5,10 +5,9 @@ using Unity.Netcode;
 
 public class GunController : NetworkBehaviour
 {
-    [SerializeField]
-    private GameObject bullet, shootPoint;
-    [SerializeField]
-    private float startTimeBtwShots;
+    [SerializeField] private GameObject bullet, shootPoint;
+    [SerializeField] private float startTimeBtwShots;
+    [SerializeField] private List<GameObject> spawnedBullets = new List<GameObject>();
     private float aimAngle, timeBtwShots;
     private Vector2 aim;
 
@@ -32,7 +31,7 @@ public class GunController : NetworkBehaviour
         {
             if (Input.GetMouseButton(0))
             {
-                Instantiate(bullet, shootPoint.transform.position, transform.rotation);
+                ShootServerRpc();
                 timeBtwShots = startTimeBtwShots;
             }
         }
@@ -41,4 +40,24 @@ public class GunController : NetworkBehaviour
             timeBtwShots -= Time.deltaTime;
         }
     }
+
+    [ServerRpc]
+    private void ShootServerRpc()
+    {
+        GameObject go = Instantiate(bullet, shootPoint.transform.position, transform.rotation);
+        spawnedBullets.Add(go);
+        go.GetComponent<BulletController>().parent = this;
+        go.GetComponent<NetworkObject>().Spawn();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void DestroyBulletServerRpc()
+    {
+        GameObject toDestroy = spawnedBullets[0];
+        toDestroy.GetComponent<NetworkObject>().Despawn();
+        spawnedBullets.Remove(toDestroy);
+        Destroy(toDestroy);
+    }
+
+    // TODO: ServerRpc for particles and probably animations
 }

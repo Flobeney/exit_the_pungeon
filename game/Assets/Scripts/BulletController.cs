@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class BulletController : MonoBehaviour
+public class BulletController : NetworkBehaviour
 {
-    [SerializeField]
-    private float speed, lifeTime;
+    [SerializeField] private float speed, lifeTime;
+
+    public GunController parent;
 
     void Start()
     {
@@ -20,6 +22,7 @@ public class BulletController : MonoBehaviour
 
     void DestroyBullet()
     {
-        Destroy(gameObject);
+        if (!IsOwner) return;
+        parent.DestroyBulletServerRpc();
     }
 }

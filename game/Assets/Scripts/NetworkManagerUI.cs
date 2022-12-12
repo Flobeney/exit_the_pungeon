@@ -6,8 +6,7 @@ using Unity.Netcode;
 
 public class NetworkManagerUI : MonoBehaviour
 {
-    [SerializeField]
-    private Button hostBtn, clientBtn;
+    [SerializeField] private Button hostBtn, clientBtn;
 
     private void Awake()
     {
