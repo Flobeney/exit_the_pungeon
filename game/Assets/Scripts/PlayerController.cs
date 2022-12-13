@@ -60,6 +60,7 @@ public class PlayerController : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void spawnPlayerRandomServerRpc()
     {
+        if(!IsSpawned) return;
         transform.position = new Vector3(Random.Range(-rdmPosRange, rdmPosRange), Random.Range(-rdmPosRange, rdmPosRange), 0f);
     }
 }
