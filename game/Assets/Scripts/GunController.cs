@@ -5,10 +5,24 @@ using Unity.Netcode;
 
 public class GunController : NetworkBehaviour
 {
-    [SerializeField] private GameObject bullet, shootPoint;
-    [SerializeField] private float startTimeBtwShots;
-    [SerializeField] private List<GameObject> spawnedBullets = new List<GameObject>();
-    private float aimAngle, timeBtwShots;
+    [SerializeField]
+    private GameObject
+
+            bullet,
+            shootPoint,
+            cursor;
+
+    [SerializeField]
+    private float startTimeBtwShots;
+
+    [SerializeField]
+    private List<GameObject> spawnedBullets = new List<GameObject>();
+
+    private float
+
+            aimAngle,
+            timeBtwShots;
+
     private Vector2 aim;
 
     // Start is called before the first frame update
@@ -23,7 +37,9 @@ public class GunController : NetworkBehaviour
         if (!IsOwner) return;
 
         // Rotation towards the mouse
-        aim = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+        aim =
+            Camera.main.ScreenToWorldPoint(Input.mousePosition) -
+            transform.position;
         aimAngle = Mathf.Atan2(aim.y, aim.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.AngleAxis(aimAngle, Vector3.forward);
 
@@ -44,8 +60,11 @@ public class GunController : NetworkBehaviour
     [ServerRpc]
     private void ShootServerRpc()
     {
-        GameObject go = Instantiate(bullet, shootPoint.transform.position, transform.rotation);
-        spawnedBullets.Add(go);
+        GameObject go =
+            Instantiate(bullet,
+            shootPoint.transform.position,
+            transform.rotation);
+        spawnedBullets.Add (go);
         go.GetComponent<BulletController>().parent = this;
         go.GetComponent<NetworkObject>().Spawn();
     }
@@ -55,8 +74,8 @@ public class GunController : NetworkBehaviour
     {
         GameObject toDestroy = spawnedBullets[0];
         toDestroy.GetComponent<NetworkObject>().Despawn();
-        spawnedBullets.Remove(toDestroy);
-        Destroy(toDestroy);
+        spawnedBullets.Remove (toDestroy);
+        Destroy (toDestroy);
     }
 
     // TODO: ServerRpc for particles and probably animations
