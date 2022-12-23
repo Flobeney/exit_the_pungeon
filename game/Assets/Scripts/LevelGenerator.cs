@@ -13,6 +13,7 @@ public class LevelGenerator : MonoBehaviour
     private const int MAX_DOOR_PER_WALL = 1;
     private const float Z_INDEX_WALL = -5f;
     private const float Z_INDEX_FLOOR = 0f;
+    private const int MAX_ROOMS = 10;
 
     // Champs
     public GameObject TilePrefab;
@@ -26,6 +27,7 @@ public class LevelGenerator : MonoBehaviour
     /// Value : coordonnées de la caméra
     private IDictionary<(int, int), Vector3> _rooms = new Dictionary<(int, int), Vector3>();
     private Vector3 _roomSize;
+    private int _nbRooms = 1; // Init à 1 car la première salle est générée
 
     // Start is called before the first frame update
     void Start()
@@ -38,6 +40,8 @@ public class LevelGenerator : MonoBehaviour
         _roomSize = new Vector3(max.x - min.x, max.y - min.y, 0);
 
         GenerateRoom(min, max);
+
+        Debug.Log("Nb rooms max : " + MAX_ROOMS);
     }
 
     // Update is called once per frame
@@ -156,10 +160,13 @@ public class LevelGenerator : MonoBehaviour
             // Générer une porte (évt.)
             if(
                 nbDoor < MAX_DOOR_PER_WALL // Pas trop de portes par mur
+                && _nbRooms < MAX_ROOMS // Pas trop de salles par niveau
                 && MustGenerateDoor(i, start, limit)
             ){
                 // Incrémenter le nb de portes
                 nbDoor++;
+                // Incrémenter le nb de salles totales
+                _nbRooms++;
 
                 // Générer la porte
                 GenerateDoor(i, min, max, sizeTile, isHorizontal, isLeft);
