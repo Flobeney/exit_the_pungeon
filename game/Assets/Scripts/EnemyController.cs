@@ -5,7 +5,7 @@ using UnityEngine;
 public class EnemyController : MonoBehaviour
 {
     // Champs
-    public GameObject player;
+    public GameObject Player;
 
     private Rigidbody2D rb;
     private Vector3 movement;
@@ -21,7 +21,7 @@ public class EnemyController : MonoBehaviour
     void Update()
     {
         // Faire la différence entre la position du joueur et de l'ennemi
-        movement = (player.transform.position - this.transform.position) / 10;
+        movement = (Player.transform.position - this.transform.position) / 10;
         rb.velocity = movement * speed;
     }
 }
