@@ -6,7 +6,7 @@ using UnityEngine;
 public class LevelGenerator : MonoBehaviour
 {
     // Constants
-    private const string MATERIALS_FOLDER = "LowlyPoly";
+    private const string MATERIALS_WALL_FOLDER = "LowlyPoly";
     private const string DUNGEON_2D_FOLDER = "Dungeon-2D-PixelArt-Tileset";
     private const float Z_INDEX_WALL = -5f;
     private const float Z_INDEX_FLOOR = 0f;
@@ -22,6 +22,8 @@ public class LevelGenerator : MonoBehaviour
     /// Value : coordonnées de la caméra
     private IDictionary<(int, int), Vector3> _rooms = new Dictionary<(int, int), Vector3>();
     private Vector3 _roomSize;
+    private int _x;
+    private int _y;
 
     // Start is called before the first frame update
     void Start()
@@ -42,6 +44,13 @@ public class LevelGenerator : MonoBehaviour
         
     }
 
+    public int GetX(){
+        return _x;
+    }
+    public int GetY(){
+        return _y;
+    }
+
     /// <summary>
     /// Generates a room
     /// </summary>
@@ -53,27 +62,27 @@ public class LevelGenerator : MonoBehaviour
 
         // Compute the xy position of the room
         // Faire arrondi
-        int x = (int)System.Math.Round(nextCamPosition.x / _roomSize.x);
-        int y = (int)System.Math.Round(nextCamPosition.y / _roomSize.y);
+        _x = (int)System.Math.Round(nextCamPosition.x / _roomSize.x);
+        _y = (int)System.Math.Round(nextCamPosition.y / _roomSize.y);
 
         // Walls to not generate
-        List<DoorDirection> wallsToNotGenerate = GetWallsToNotGenerate(x, y);
+        List<DoorDirection> wallsToNotGenerate = GetWallsToNotGenerate();
 
         // Is room already generated ?
-        if(_rooms.ContainsKey((x, y))){
+        if(_rooms.ContainsKey((_x, _y))){
             // Room already generated
             Debug.Log("Room already generated");
-            Camera.main.transform.position = _rooms[(x, y)];
+            Camera.main.transform.position = _rooms[(_x, _y)];
             return;
         }else{
             // Room not generated
             Debug.Log("Room not generated");
             // Add room to list
-            _rooms.Add((x, y), nextCamPosition);
+            _rooms.Add((_x, _y), nextCamPosition);
         }
 
         // Choose material
-        Object[] materials = Resources.LoadAll(MATERIALS_FOLDER, typeof(Material));
+        Object[] materials = Resources.LoadAll(MATERIALS_WALL_FOLDER, typeof(Material));
         Material material = (Material)materials[Random.Range(0, materials.Length)];
         TilePrefab.GetComponent<Renderer>().material = material;
 
@@ -104,27 +113,24 @@ public class LevelGenerator : MonoBehaviour
     /// <summary>
     /// Compute the walls to not generate
     /// </summary>
-    /// <param name="doorDirection">Direction of the door from which you come</param>
-    /// <param name"x">x position of the room</param>
-    /// <param name="y">y position of the room</param>
     /// <returns>List of walls to not generate</returns>
-    List<DoorDirection> GetWallsToNotGenerate(int x, int y){
+    List<DoorDirection> GetWallsToNotGenerate(){
         List<DoorDirection> wallsToNotGenerate = new List<DoorDirection>();
 
         // Check si la salle de gauche existe
-        if(_rooms.ContainsKey((x - 1, y))){
+        if(_rooms.ContainsKey((_x - 1, _y))){
             wallsToNotGenerate.Add(DoorDirection.DoorLeft);
         }
         // Check si la salle de droite existe
-        if(_rooms.ContainsKey((x + 1, y))){
+        if(_rooms.ContainsKey((_x + 1, _y))){
             wallsToNotGenerate.Add(DoorDirection.DoorRight);
         }
         // Check si la salle du haut existe
-        if(_rooms.ContainsKey((x, y + 1))){
+        if(_rooms.ContainsKey((_x, _y + 1))){
             wallsToNotGenerate.Add(DoorDirection.DoorTop);
         }
         // Check si la salle du bas existe
-        if(_rooms.ContainsKey((x, y - 1))){
+        if(_rooms.ContainsKey((_x, _y - 1))){
             wallsToNotGenerate.Add(DoorDirection.DoorBottom);
         }
 

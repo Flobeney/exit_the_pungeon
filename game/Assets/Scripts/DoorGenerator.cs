@@ -9,12 +9,18 @@ public class DoorGenerator : MonoBehaviour
     private const int SIZE_DOOR = 2;
     private const int MAX_DOOR_PER_WALL = 1;
     private const int MAX_ROOMS = 10;
+    private const string MATERIALS_DOOR_FOLDER = "Hand_Painted_Seamless_Wood_Texture";
 
     // Champs
     public GameObject DoorPrefab;
 
     // Champs privés
     private int _nbRooms = 1; // Init à 1 car la première salle est générée
+    /// Cette liste se compose de la manière suivante
+    /// Key Item1 : coordonnées x de la salle
+    /// Key Item2 : coordonnées y de la salle
+    /// Value : liste des portes de la salle
+    private IDictionary<(int, int), List<GameObject>> _doors = new Dictionary<(int, int), List<GameObject>>();
 
     // Start is called before the first frame update
     void Start()
@@ -135,6 +141,29 @@ public class DoorGenerator : MonoBehaviour
         DoorPrefab.tag = isHorizontal
         ? (isLeft ? "DoorTop" : "DoorBottom")
         : (isLeft ? "DoorLeft" : "DoorRight");
+        // Choose material
+        Object[] materials = Resources.LoadAll(MATERIALS_DOOR_FOLDER, typeof(Material));
+        Material material = (Material)materials[Random.Range(0, materials.Length)];
+        DoorPrefab.GetComponent<Renderer>().material = material;
+        // Ajouter la porte à la liste
+        AddDoorToList();
+        // Init la porte
         Instantiate(DoorPrefab, posDoor, Quaternion.identity);
+    }
+
+    /// <summary>
+    /// Add the door to the list
+    /// </summary>
+    private void AddDoorToList(){
+        LevelGenerator lvlGenerator = GameObject.Find("LevelGenerator").GetComponent<LevelGenerator>();
+        int x = lvlGenerator.GetX();
+        int y = lvlGenerator.GetY();
+        // Est-ce que la liste pour ces coordonnées n'existe pas ?
+        if(!_doors.ContainsKey((x, y))){
+            // Créer la liste
+            _doors.Add((x, y), new List<GameObject>());
+        }
+        // Ajouter la porte
+        _doors[(x, y)].Add(DoorPrefab);
     }
 }
