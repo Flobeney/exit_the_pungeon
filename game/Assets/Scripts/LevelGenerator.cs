@@ -104,10 +104,22 @@ public class LevelGenerator : MonoBehaviour
         // Enemies (si pas 1ère salle)
         if(_rooms.Count > 1){
             GameObject.Find("EnemyGenerator").GetComponent<EnemyGenerator>().SpawnEnemies(min, max);
+            // Faire de la porte un mur (pas directement sinon le joueur ne peut pas passer à travers)
+            Invoke("CloseAllDoors", 1f);
+        }else{
+            // Sinon ouvrir les portes
+            GameObject.Find("DoorGenerator").GetComponent<DoorGenerator>().OpenDoors();
         }
 
         // Move camera
         Camera.main.transform.position = nextCamPosition;
+    }
+
+    /// <summary>
+    /// Open the doors
+    /// </summary>
+    private void CloseAllDoors(){
+        GameObject.Find("DoorGenerator").GetComponent<DoorGenerator>().CloseDoors();
     }
 
     /// <summary>
