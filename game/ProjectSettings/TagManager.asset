@@ -8,6 +8,7 @@ TagManager:
   - DoorBottom
   - DoorLeft
   - DoorRight
+  - Wall
   layers:
   - Default
   - TransparentFX

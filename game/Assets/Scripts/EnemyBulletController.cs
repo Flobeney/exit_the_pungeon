@@ -7,10 +7,10 @@ public class EnemyBulletController : MonoBehaviour
     // Champs
     public float Speed;
 
-    // Lors d'une fin de collision (trigger)
-    void OnTriggerExit2D(Collider2D other)
+    // Lors d'une collision
+    void OnCollisionEnter2D(Collision2D other)
     {
-        if(other.gameObject.tag.Contains("Door")){
+        if(other.gameObject.tag == "Wall"){
             Destroy(this.gameObject);
         }
     }

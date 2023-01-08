@@ -100,6 +100,11 @@ public class LevelGenerator : MonoBehaviour
         // Floor
         // GenerateFloor(materials, min, max);
 
+        // Enemies (si pas 1ère salle)
+        if(_rooms.Count > 1){
+            GameObject.Find("EnemyGenerator").GetComponent<EnemyGenerator>().SpawnEnemies(min, max);
+        }
+
         // Move camera
         Camera.main.transform.position = nextCamPosition;
     }
