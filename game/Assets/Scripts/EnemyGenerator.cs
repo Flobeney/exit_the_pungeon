@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public class EnemyGenerator : MonoBehaviour
+public class EnemyGenerator : NetworkBehaviour
 {
     // Constants
     private const int MIN_ENEMIES = 3;
@@ -21,6 +22,11 @@ public class EnemyGenerator : MonoBehaviour
     /// <param name="min">Min of the camera</param>
     /// <param name="max">Max of the camera</param>
     public void SpawnEnemies(Vector3 min, Vector3 max){
+        SpawnEnemiesServerRpc(min, max);
+    }
+
+    [ServerRpc]
+    void SpawnEnemiesServerRpc(Vector3 min, Vector3 max){
         // Nombre d'ennemis
         _nbEnemies = Random.Range(MIN_ENEMIES, MAX_ENEMIES);
 
@@ -31,6 +37,8 @@ public class EnemyGenerator : MonoBehaviour
             // Set le joueur comme cible
             enemy.GetComponent<EnemyController>().Player = Player;
             enemy.GetComponent<EnemyBulletManager>().Player = Player;
+            // Spawn on the network
+            enemy.GetComponent<NetworkObject>().Spawn();
         }
     }
 
@@ -43,7 +51,12 @@ public class EnemyGenerator : MonoBehaviour
         // Si plus d'ennemis, on ouvre les portes
         if(_nbEnemies == 0){
             Debug.Log("All enemies destroyed, opening doors");
-            GameObject.Find("DoorGenerator").GetComponent<DoorGenerator>().OpenDoors();
+            OpenDoorsServerRpc();
         }
+    }
+
+    [ServerRpc]
+    void OpenDoorsServerRpc(){
+        GameObject.Find("DoorGenerator").GetComponent<DoorGenerator>().OpenDoors();
     }
 }

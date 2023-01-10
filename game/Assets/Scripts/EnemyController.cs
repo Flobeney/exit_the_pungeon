@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public class EnemyController : MonoBehaviour
+public class EnemyController : NetworkBehaviour
 {
     // Champs
     public GameObject Player;
@@ -20,6 +21,11 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        UpdateServerRpc();
+    }
+
+    [ServerRpc]
+    void UpdateServerRpc(){
         // Faire la différence entre la position du joueur et de l'ennemi
         movement = (Player.transform.position - this.transform.position) / 10;
         rb.velocity = movement * speed;
@@ -31,8 +37,14 @@ public class EnemyController : MonoBehaviour
         // WORKAROUND : destroy enemy when colliding with player
         // TODO : destroy enemy when colliding with bullet
         if(other.gameObject.tag == "Player"){
-            Destroy(this.gameObject);
-            GameObject.Find("EnemyGenerator").GetComponent<EnemyGenerator>().EnemyDestroyed();
+            DestroyServerRpc();
         }
+    }
+
+    [ServerRpc]
+    void DestroyServerRpc(){
+        this.gameObject.GetComponent<NetworkObject>().Despawn();
+        Destroy(this.gameObject);
+        GameObject.Find("EnemyGenerator").GetComponent<EnemyGenerator>().EnemyDestroyed();
     }
 }

@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public class DoorGenerator : MonoBehaviour
+public class DoorGenerator : NetworkBehaviour
 {
     // Constants
     private const int PERCENT_CHANCE_DOOR = 10;
@@ -58,7 +59,7 @@ public class DoorGenerator : MonoBehaviour
             _nbRooms++;
 
             // Générer la porte
-            GenerateDoor(i, min, max, sizeTile, isHorizontal, isLeft);
+            GenerateDoorServerRpc(i, min, max, sizeTile, isHorizontal, isLeft);
 
             return true;
         }
@@ -89,7 +90,8 @@ public class DoorGenerator : MonoBehaviour
     /// <param name="sizeTile">Size of the tile</param>
     /// <param name="isHorizontal">If the wall is horizontal</param>
     /// <param name="isLeft">If the wall is on the left</param>
-    void GenerateDoor(float i, Vector3 min, Vector3 max, Vector3 sizeTile, bool isHorizontal, bool isLeft){
+    [ServerRpc]
+    void GenerateDoorServerRpc(float i, Vector3 min, Vector3 max, Vector3 sizeTile, bool isHorizontal, bool isLeft){
         // Instancier la porte
         Vector3 posDoorLeft;
         Vector3 posDoorRight;
@@ -144,6 +146,7 @@ public class DoorGenerator : MonoBehaviour
         DoorPrefab.GetComponent<Renderer>().material = material;
         // Init la porte
         GameObject door = Instantiate(DoorPrefab, posDoor, Quaternion.identity);
+        door.GetComponent<NetworkObject>().Spawn();
         // Ajouter la porte à la liste
         _doors.Add(door);
     }
@@ -152,20 +155,21 @@ public class DoorGenerator : MonoBehaviour
     /// Open the doors
     /// </summary>
     public void OpenDoors(){
-        ChangeTriggerDoors(true);
+        ChangeTriggerDoorsServerRpc(true);
     }
 
     /// <summary>
     /// Close the doors
     /// </summary>
     public void CloseDoors(){
-        ChangeTriggerDoors(false);
+        ChangeTriggerDoorsServerRpc(false);
     }
 
     /// <summary>
     /// Change the trigger of the doors
     /// </summary>
-    private void ChangeTriggerDoors(bool isTrigger){
+    [ServerRpc]
+    private void ChangeTriggerDoorsServerRpc(bool isTrigger){
         foreach (GameObject door in _doors){
             // Définir la porte comme un trigger ou un mur
             door.GetComponent<BoxCollider2D>().isTrigger = isTrigger;

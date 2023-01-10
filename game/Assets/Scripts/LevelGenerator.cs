@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Unity.Netcode;
 
-public class LevelGenerator : MonoBehaviour
+public class LevelGenerator : NetworkBehaviour
 {
     // Constants
     private const string MATERIALS_WALL_FOLDER = "LowlyPoly";
@@ -35,7 +36,9 @@ public class LevelGenerator : MonoBehaviour
         // Get size of room
         _roomSize = new Vector3(max.x - min.x, max.y - min.y, 0);
 
-        GenerateRoom(min, max);
+        if(IsHost || IsServer){
+            GenerateRoomServerRpc(min, max);
+        }
     }
 
     // Update is called once per frame
@@ -56,7 +59,8 @@ public class LevelGenerator : MonoBehaviour
     /// </summary>
     /// <param name="min">Min of the camera</param>
     /// <param name="max">Max of the camera</param>
-    public void GenerateRoom(Vector3 min, Vector3 max){
+    [ServerRpc]
+    public void GenerateRoomServerRpc(Vector3 min, Vector3 max){
         // Compute new camera position
         Vector3 nextCamPosition = new Vector3((max.x + min.x) / 2, (max.y + min.y) / 2, Camera.main.transform.position.z);
 
@@ -90,13 +94,13 @@ public class LevelGenerator : MonoBehaviour
         Vector3 sizeTile = TilePrefab.GetComponent<Renderer>().bounds.size;
 
         // Haut
-        if(!wallsToNotGenerate.Contains(DoorDirection.DoorTop)) GenerateWall(min, max, sizeTile, true, true);
+        if(!wallsToNotGenerate.Contains(DoorDirection.DoorTop)) GenerateWallServerRpc(min, max, sizeTile, true, true);
         // Bas
-        if(!wallsToNotGenerate.Contains(DoorDirection.DoorBottom)) GenerateWall(min, max, sizeTile, true, false);
+        if(!wallsToNotGenerate.Contains(DoorDirection.DoorBottom)) GenerateWallServerRpc(min, max, sizeTile, true, false);
         // Gauche
-        if(!wallsToNotGenerate.Contains(DoorDirection.DoorLeft)) GenerateWall(min, max, sizeTile, false, true);
+        if(!wallsToNotGenerate.Contains(DoorDirection.DoorLeft)) GenerateWallServerRpc(min, max, sizeTile, false, true);
         // Droite
-        if(!wallsToNotGenerate.Contains(DoorDirection.DoorRight)) GenerateWall(min, max, sizeTile, false, false);
+        if(!wallsToNotGenerate.Contains(DoorDirection.DoorRight)) GenerateWallServerRpc(min, max, sizeTile, false, false);
 
         // Floor
         // GenerateFloor(materials, min, max);
@@ -105,7 +109,7 @@ public class LevelGenerator : MonoBehaviour
         if(_rooms.Count > 1){
             GameObject.Find("EnemyGenerator").GetComponent<EnemyGenerator>().SpawnEnemies(min, max);
             // Faire de la porte un mur (pas directement sinon le joueur ne peut pas passer à travers)
-            Invoke("CloseAllDoors", 1f);
+            Invoke("CloseAllDoorsServerRpc", 1f);
         }else{
             // Sinon ouvrir les portes
             GameObject.Find("DoorGenerator").GetComponent<DoorGenerator>().OpenDoors();
@@ -118,7 +122,8 @@ public class LevelGenerator : MonoBehaviour
     /// <summary>
     /// Open the doors
     /// </summary>
-    private void CloseAllDoors(){
+    [ServerRpc]
+    private void CloseAllDoorsServerRpc(){
         GameObject.Find("DoorGenerator").GetComponent<DoorGenerator>().CloseDoors();
     }
 
@@ -161,7 +166,8 @@ public class LevelGenerator : MonoBehaviour
     /// <param name="sizeTile">Size of the tile</param>
     /// <param name="isHorizontal">If the wall is horizontal</param>
     /// <param name="isLeft">If the wall is on the left</param>
-    void GenerateWall(Vector3 min, Vector3 max, Vector3 sizeTile, bool isHorizontal, bool isLeft){
+    [ServerRpc]
+    void GenerateWallServerRpc(Vector3 min, Vector3 max, Vector3 sizeTile, bool isHorizontal, bool isLeft){
         // Nb de portes sur le mur actuel
         int nbDoor = 0;
         // Définir quelles variables utiliser suivant si c'est haut/bas ou gauche/droite
@@ -192,7 +198,8 @@ public class LevelGenerator : MonoBehaviour
                 : new Vector3(max.x, i + (sizeTile.y / 2), Z_INDEX_WALL);
             }
             // Générer le mur
-            Instantiate(TilePrefab, pos, Quaternion.identity);
+            GameObject wall = Instantiate(TilePrefab, pos, Quaternion.identity);
+            wall.GetComponent<NetworkObject>().Spawn();
         }
     }
 

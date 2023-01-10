@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public class EnemyBulletManager : MonoBehaviour
+public class EnemyBulletManager : NetworkBehaviour
 {
     // Champs
     public GameObject Player;
@@ -24,15 +25,21 @@ public class EnemyBulletManager : MonoBehaviour
         // Fin attente interval
         if (Time.time >= endTime)
         {
-            // Générer une balle
-            GameObject bullet = Instantiate(BulletPrefab, this.transform.position, Quaternion.identity);
-            // Donner une vitesse à la balle
-            Vector3 movement = (Player.transform.position - this.transform.position) / 10;
-            bullet.GetComponent<Rigidbody2D>().velocity = movement * bullet.GetComponent<EnemyBulletController>().Speed;
-
-            // Nouvel interval
-            InitInterval();
+            UpdateServerRpc();
         }
+    }
+
+    [ServerRpc]
+    void UpdateServerRpc(){
+        // Générer une balle
+        GameObject bullet = Instantiate(BulletPrefab, this.transform.position, Quaternion.identity);
+        // Donner une vitesse à la balle
+        Vector3 movement = (Player.transform.position - this.transform.position) / 10;
+        bullet.GetComponent<Rigidbody2D>().velocity = movement * bullet.GetComponent<EnemyBulletController>().Speed;
+        bullet.GetComponent<NetworkObject>().Spawn();
+
+        // Nouvel interval
+        InitInterval();
     }
 
     // Init un nouvel interval

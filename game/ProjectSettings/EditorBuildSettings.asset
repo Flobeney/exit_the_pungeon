@@ -8,7 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ControlStuff.unity
     guid: d82c0f219a958ae46980b4e5a99d0e74
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/LevelGenerator.unity
     guid: 31746575eb2f64f04a8222d13378c71d
   m_configObjects: {}

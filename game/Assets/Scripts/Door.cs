@@ -103,6 +103,6 @@ public class Door : MonoBehaviour
         }
 
         // Générer la prochaine salle
-        FindObjectOfType<LevelGenerator>().GenerateRoom(min, max);
+        FindObjectOfType<LevelGenerator>().GenerateRoomServerRpc(min, max);
     }
 }
