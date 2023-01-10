@@ -21,7 +21,9 @@ public class EnemyController : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateServerRpc();
+        if(IsHost || IsServer){
+            UpdateServerRpc();
+        }
     }
 
     [ServerRpc]
@@ -43,8 +45,10 @@ public class EnemyController : NetworkBehaviour
 
     [ServerRpc]
     void DestroyServerRpc(){
-        this.gameObject.GetComponent<NetworkObject>().Despawn();
-        Destroy(this.gameObject);
-        GameObject.Find("EnemyGenerator").GetComponent<EnemyGenerator>().EnemyDestroyed();
+        if(IsHost || IsServer){
+            this.gameObject.GetComponent<NetworkObject>().Despawn();
+            Destroy(this.gameObject);
+            GameObject.Find("EnemyGenerator").GetComponent<EnemyGenerator>().EnemyDestroyed();
+        }
     }
 }

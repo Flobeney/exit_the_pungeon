@@ -23,7 +23,7 @@ public class EnemyBulletManager : NetworkBehaviour
     void Update()
     {
         // Fin attente interval
-        if (Time.time >= endTime)
+        if (Time.time >= endTime && (IsHost || IsServer))
         {
             UpdateServerRpc();
         }
