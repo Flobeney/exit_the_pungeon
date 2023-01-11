@@ -8,7 +8,7 @@ public class EnemyBulletManager : NetworkBehaviour
     // Champs
     public GameObject Player;
     public GameObject BulletPrefab;
-    public GameObject[] Players;
+    public List<GameObject> Players;
 
     // Champs privés
 
@@ -55,6 +55,8 @@ public class EnemyBulletManager : NetworkBehaviour
 
         // Parcourir les joueurs
         foreach (GameObject player in Players){
+            // Si le joueur est null (détruit), continuer
+            if(player == null) continue;
             // Calculer la distance entre le joueur et l'ennemi
             distance = Vector3.Distance(player.transform.position, this.transform.position);
             // Si la distance est plus petite que la distance minimale

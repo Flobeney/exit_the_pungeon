@@ -63,4 +63,21 @@ public class PlayerController : NetworkBehaviour
         if(!IsSpawned) return;
         transform.position = new Vector3(Random.Range(-rdmPosRange, rdmPosRange), Random.Range(-rdmPosRange, rdmPosRange), 0f);
     }
+
+    // Lors d'une collision
+    void OnCollisionEnter2D(Collision2D other)
+    {
+        // Destroy enemy when colliding with bullet
+        if(other.gameObject.tag == "BulletEnemy"){
+            DestroyServerRpc();
+        }
+    }
+
+    [ServerRpc]
+    void DestroyServerRpc(){
+        if(IsHost || IsServer){
+            this.gameObject.GetComponent<NetworkObject>().Despawn();
+            Destroy(this.gameObject);
+        }
+    }
 }

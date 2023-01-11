@@ -10,6 +10,7 @@ TagManager:
   - DoorRight
   - Wall
   - Bullet
+  - BulletEnemy
   layers:
   - Default
   - TransparentFX

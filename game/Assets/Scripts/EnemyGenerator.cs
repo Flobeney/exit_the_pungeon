@@ -45,7 +45,7 @@ public class EnemyGenerator : NetworkBehaviour
             GameObject enemy = Instantiate(EnemyPrefab, pos, Quaternion.identity);
             // Set le joueur comme cible
             enemy.GetComponent<EnemyController>().Player = Player;
-            enemy.GetComponent<EnemyBulletManager>().Players = _players;
+            enemy.GetComponent<EnemyBulletManager>().Players = new List<GameObject>(_players);
             // Spawn on the network
             enemy.GetComponent<NetworkObject>().Spawn();
         }
