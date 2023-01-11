@@ -9,6 +9,7 @@ TagManager:
   - DoorLeft
   - DoorRight
   - Wall
+  - Bullet
   layers:
   - Default
   - TransparentFX

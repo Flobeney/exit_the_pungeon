@@ -42,13 +42,12 @@ public class EnemyController : NetworkBehaviour
         movement = new Vector3(Random.Range(-1.5f, 1.5f), Random.Range(-1.5f, 1.5f), 0);
         rb.velocity = movement * speed;
     }
-    
+
     // Lors d'une collision
     void OnCollisionEnter2D(Collision2D other)
     {
-        // WORKAROUND : destroy enemy when colliding with player
-        // TODO : destroy enemy when colliding with bullet
-        if(other.gameObject.tag == "Player"){
+        // Destroy enemy when colliding with bullet
+        if(other.gameObject.tag == "Bullet"){
             DestroyServerRpc();
         }
     }
