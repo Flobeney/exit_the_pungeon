@@ -15,7 +15,8 @@ public class CursorControls : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Camera currentCam = Camera.current != null ? Camera.current : Camera.main;
+        mousePos = currentCam.ScreenToWorldPoint(Input.mousePosition);
         transform.position = mousePos;
     }
 }

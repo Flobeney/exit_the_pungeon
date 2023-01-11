@@ -37,8 +37,9 @@ public class GunController : NetworkBehaviour
         if (!IsOwner) return;
 
         // Rotation towards the mouse
+        Camera currentCam = Camera.current != null ? Camera.current : Camera.main;
         aim =
-            Camera.main.ScreenToWorldPoint(Input.mousePosition) -
+            currentCam.ScreenToWorldPoint(Input.mousePosition) -
             transform.position;
         aimAngle = Mathf.Atan2(aim.y, aim.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.AngleAxis(aimAngle, Vector3.forward);

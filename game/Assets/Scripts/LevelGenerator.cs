@@ -29,7 +29,7 @@ public class LevelGenerator : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Camera currentCam = Camera.current.GetComponent<Camera>();
+        Camera currentCam = Camera.current;
         // Get size of camera
         Vector3 min = currentCam.ViewportToWorldPoint(new Vector3(0, 0, currentCam.nearClipPlane));
         Vector3 max = currentCam.ViewportToWorldPoint(new Vector3(1, 1, currentCam.nearClipPlane));
@@ -63,7 +63,7 @@ public class LevelGenerator : NetworkBehaviour
     [ServerRpc]
     public void GenerateRoomServerRpc(Vector3 min, Vector3 max){
         // Compute new camera position
-        Vector3 nextCamPosition = new Vector3((max.x + min.x) / 2, (max.y + min.y) / 2, Camera.current.GetComponent<Camera>().transform.position.z);
+        Vector3 nextCamPosition = new Vector3((max.x + min.x) / 2, (max.y + min.y) / 2, Camera.current.transform.position.z);
 
         // Compute the xy position of the room
         // Faire arrondi

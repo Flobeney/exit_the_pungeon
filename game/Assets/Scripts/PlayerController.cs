@@ -30,7 +30,8 @@ public class PlayerController : NetworkBehaviour
     {
         if (!IsOwner) return;
 
-        cursor = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+        Camera currentCam = Camera.current != null ? Camera.current : Camera.main;
+        cursor = currentCam.ScreenToWorldPoint(Input.mousePosition) - transform.position;
         if (cursor.x > 0 && !facingRight)
         {
             Flip();
