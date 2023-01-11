@@ -29,9 +29,10 @@ public class LevelGenerator : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Camera currentCam = Camera.current.GetComponent<Camera>();
         // Get size of camera
-        Vector3 min = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, Camera.main.nearClipPlane));
-        Vector3 max = Camera.main.ViewportToWorldPoint(new Vector3(1, 1, Camera.main.nearClipPlane));
+        Vector3 min = currentCam.ViewportToWorldPoint(new Vector3(0, 0, currentCam.nearClipPlane));
+        Vector3 max = currentCam.ViewportToWorldPoint(new Vector3(1, 1, currentCam.nearClipPlane));
 
         // Get size of room
         _roomSize = new Vector3(max.x - min.x, max.y - min.y, 0);
@@ -62,7 +63,7 @@ public class LevelGenerator : NetworkBehaviour
     [ServerRpc]
     public void GenerateRoomServerRpc(Vector3 min, Vector3 max){
         // Compute new camera position
-        Vector3 nextCamPosition = new Vector3((max.x + min.x) / 2, (max.y + min.y) / 2, Camera.main.transform.position.z);
+        Vector3 nextCamPosition = new Vector3((max.x + min.x) / 2, (max.y + min.y) / 2, Camera.current.GetComponent<Camera>().transform.position.z);
 
         // Compute the xy position of the room
         // Faire arrondi
@@ -76,7 +77,7 @@ public class LevelGenerator : NetworkBehaviour
         if(_rooms.ContainsKey((_x, _y))){
             // Room already generated
             Debug.Log("Room already generated");
-            Camera.main.transform.position = _rooms[(_x, _y)];
+            Camera.current.GetComponent<Camera>().transform.position = _rooms[(_x, _y)];
             return;
         }else{
             // Room not generated
@@ -116,7 +117,7 @@ public class LevelGenerator : NetworkBehaviour
         }
 
         // Move camera
-        Camera.main.transform.position = nextCamPosition;
+        Camera.current.GetComponent<Camera>().transform.position = nextCamPosition;
     }
 
     /// <summary>
