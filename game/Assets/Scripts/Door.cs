@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public class Door : MonoBehaviour
+public class Door : NetworkBehaviour
 {
     // Champs
     private DoorDirection _direction;
@@ -24,12 +25,15 @@ public class Door : MonoBehaviour
     /// </summary>
     void OnTriggerEnter2D(Collider2D other){
         // Si le joueur entre dans la porte
-        if(other.tag == "Player"){
+        if(other.tag == "Player" && (IsHost || IsServer)){
             // Get DoorDirection
             _direction = (DoorDirection)DoorDirection.Parse(typeof(DoorDirection), this.tag);
 
             // On génère la nouvelle pièce
             GenerateNextRoom(GetNextDoorDirection(other));
+
+            // Déplacer les joueurs
+            GameObject.Find("PlayerTP").GetComponent<PlayerTP>().MovePlayerServerRpc(other.gameObject.transform.position);
         }
     }
 
