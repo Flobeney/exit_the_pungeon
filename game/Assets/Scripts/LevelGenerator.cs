@@ -113,7 +113,7 @@ public class LevelGenerator : NetworkBehaviour
             Invoke("CloseAllDoorsServerRpc", 1f);
         }else{
             // Sinon ouvrir les portes
-            GameObject.Find("DoorGenerator").GetComponent<DoorGenerator>().OpenDoors();
+            GameObject.Find("DoorGenerator").GetComponent<DoorGenerator>().OpenDoorsServerRpc();
         }
 
         // Move camera
@@ -125,7 +125,7 @@ public class LevelGenerator : NetworkBehaviour
     /// </summary>
     [ServerRpc]
     private void CloseAllDoorsServerRpc(){
-        GameObject.Find("DoorGenerator").GetComponent<DoorGenerator>().CloseDoors();
+        GameObject.Find("DoorGenerator").GetComponent<DoorGenerator>().CloseDoorsServerRpc();
     }
 
     /// <summary>

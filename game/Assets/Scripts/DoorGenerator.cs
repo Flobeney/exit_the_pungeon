@@ -154,14 +154,16 @@ public class DoorGenerator : NetworkBehaviour
     /// <summary>
     /// Open the doors
     /// </summary>
-    public void OpenDoors(){
+    [ServerRpc]
+    public void OpenDoorsServerRpc(){
         ChangeTriggerDoorsServerRpc(true);
     }
 
     /// <summary>
     /// Close the doors
     /// </summary>
-    public void CloseDoors(){
+    [ServerRpc]
+    public void CloseDoorsServerRpc(){
         ChangeTriggerDoorsServerRpc(false);
     }
 

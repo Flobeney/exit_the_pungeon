@@ -66,6 +66,6 @@ public class EnemyGenerator : NetworkBehaviour
 
     [ServerRpc]
     void OpenDoorsServerRpc(){
-        GameObject.Find("DoorGenerator").GetComponent<DoorGenerator>().OpenDoors();
+        GameObject.Find("DoorGenerator").GetComponent<DoorGenerator>().OpenDoorsServerRpc();
     }
 }
