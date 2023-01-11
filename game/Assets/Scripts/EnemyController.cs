@@ -29,9 +29,9 @@ public class EnemyController : NetworkBehaviour
         if(IsHost || IsServer){
             // Fin attente interval
             if (Time.time >= endTime){
-                NewMovementServerRpc();
+                // NewMovementServerRpc();
+                UpdateServerRpc();
             }
-            UpdateServerRpc();
         }
     }
 
@@ -39,14 +39,10 @@ public class EnemyController : NetworkBehaviour
     void UpdateServerRpc(){
         // Faire la différence entre la position du joueur et de l'ennemi
         // movement = (Player.transform.position - this.transform.position) / 10;
+        movement = new Vector3(Random.Range(-1.5f, 1.5f), Random.Range(-1.5f, 1.5f), 0);
         rb.velocity = movement * speed;
     }
-
-    [ServerRpc]
-    void NewMovementServerRpc(){
-        movement = new Vector3(Random.Range(-1.5f, 1.5f), Random.Range(-1.5f, 1.5f), 0);
-    }
-
+    
     // Lors d'une collision
     void OnCollisionEnter2D(Collision2D other)
     {

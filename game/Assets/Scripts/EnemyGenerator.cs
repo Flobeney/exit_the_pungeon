@@ -15,6 +15,15 @@ public class EnemyGenerator : NetworkBehaviour
 
     // Champs privés
     private int _nbEnemies;
+    private GameObject[] _players;
+
+    // Start is called before the first frame update
+    void Start(){
+        if(IsHost || IsServer){
+            // Récupérer les joueurs de la scène (online)
+            _players = GameObject.FindGameObjectsWithTag("Player");
+        }
+    }
 
     /// <summary>
     // Faire apparaître des ennemis
@@ -36,7 +45,7 @@ public class EnemyGenerator : NetworkBehaviour
             GameObject enemy = Instantiate(EnemyPrefab, pos, Quaternion.identity);
             // Set le joueur comme cible
             enemy.GetComponent<EnemyController>().Player = Player;
-            enemy.GetComponent<EnemyBulletManager>().Player = Player;
+            enemy.GetComponent<EnemyBulletManager>().Players = _players;
             // Spawn on the network
             enemy.GetComponent<NetworkObject>().Spawn();
         }

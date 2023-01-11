@@ -118,6 +118,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Player: {fileID: 0}
   BulletPrefab: {fileID: 2267976773582116071, guid: 8b09f67587ca54995bcb229a6b7066f4, type: 3}
+  Players: []
 --- !u!50 &5502304550202412140
 Rigidbody2D:
   serializedVersion: 4
