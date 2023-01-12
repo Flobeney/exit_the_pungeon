@@ -29,7 +29,7 @@ public class LevelGenerator : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Camera currentCam = Camera.current;
+        Camera currentCam = Camera.current != null ? Camera.current : Camera.main;
         // Get size of camera
         Vector3 min = currentCam.ViewportToWorldPoint(new Vector3(0, 0, currentCam.nearClipPlane));
         Vector3 max = currentCam.ViewportToWorldPoint(new Vector3(1, 1, currentCam.nearClipPlane));

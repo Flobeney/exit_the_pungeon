@@ -70,9 +70,10 @@ public class Door : NetworkBehaviour
     /// Generate the next room
     /// </summary>
     void GenerateNextRoom(DoorDirection directionNextRoom){
+        Camera currentCam = Camera.current != null ? Camera.current : Camera.main;
         // Get size of camera
-        Vector3 min = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, Camera.main.nearClipPlane));
-        Vector3 max = Camera.main.ViewportToWorldPoint(new Vector3(1, 1, Camera.main.nearClipPlane));
+        Vector3 min = currentCam.ViewportToWorldPoint(new Vector3(0, 0, currentCam.nearClipPlane));
+        Vector3 max = currentCam.ViewportToWorldPoint(new Vector3(1, 1, currentCam.nearClipPlane));
 
         float diff;
         switch (directionNextRoom){
