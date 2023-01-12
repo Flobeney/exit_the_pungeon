@@ -6,7 +6,6 @@ using Unity.Netcode;
 public class EnemyBulletManager : NetworkBehaviour
 {
     // Champs
-    public GameObject Player;
     public GameObject BulletPrefab;
     public List<GameObject> Players;
 
@@ -19,8 +18,8 @@ public class EnemyBulletManager : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // Init interval
-        InitInterval();
+        // 1er tir
+        UpdateServerRpc();
     }
 
     // Update is called once per frame

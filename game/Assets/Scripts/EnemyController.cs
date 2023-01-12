@@ -6,12 +6,10 @@ using Unity.Netcode;
 public class EnemyController : NetworkBehaviour
 {
     // Champs
-    public GameObject Player;
 
     private Rigidbody2D rb;
     private Vector3 movement;
     private float speed = 5f;
-    private GameObject[] _players;
     float IntervalMin = 5, IntervalMax = 7;
     float interval, startTime, endTime;
 
@@ -19,28 +17,28 @@ public class EnemyController : NetworkBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        // Init interval
-        InitInterval();
+        // 1er mouvement
+        UpdateServerRpc();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(IsHost || IsServer){
-            // Fin attente interval
-            if (Time.time >= endTime){
-                // NewMovementServerRpc();
-                UpdateServerRpc();
-            }
+        // Fin attente interval
+        if (Time.time >= endTime && (IsHost || IsServer))
+        {
+            UpdateServerRpc();
         }
     }
 
     [ServerRpc]
     void UpdateServerRpc(){
         // Faire la différence entre la position du joueur et de l'ennemi
-        // movement = (Player.transform.position - this.transform.position) / 10;
         movement = new Vector3(Random.Range(-1.5f, 1.5f), Random.Range(-1.5f, 1.5f), 0);
         rb.velocity = movement * speed;
+
+        // Nouvel interval
+        InitInterval();
     }
 
     // Lors d'une collision

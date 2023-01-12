@@ -11,7 +11,6 @@ public class EnemyGenerator : NetworkBehaviour
 
     // Champs
     public GameObject EnemyPrefab;
-    public GameObject Player;
 
     // Champs privés
     private int _nbEnemies;
@@ -44,7 +43,6 @@ public class EnemyGenerator : NetworkBehaviour
             Vector3 pos = new Vector3(Random.Range(min.x, max.x), Random.Range(min.y, max.y), 0);
             GameObject enemy = Instantiate(EnemyPrefab, pos, Quaternion.identity);
             // Set le joueur comme cible
-            enemy.GetComponent<EnemyController>().Player = Player;
             enemy.GetComponent<EnemyBulletManager>().Players = new List<GameObject>(_players);
             // Spawn on the network
             enemy.GetComponent<NetworkObject>().Spawn();
